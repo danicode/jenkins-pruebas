@@ -1,0 +1,9 @@
+services:
+  jenkins:
+    build: ./
+    container_name: jenkins-container
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+    ports:
+      - "8080:8080"
+      - "5000:5000"

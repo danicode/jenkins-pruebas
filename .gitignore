@@ -1,0 +1,25 @@
+# Ignorar el directorio jenkins_home
+jenkins_home/
+
+# Ignorar archivos y directorios temporales
+*.log
+*.tmp
+*.bak
+
+# Ignorar archivos de configuración específicos del entorno
+.env
+
+# Ignorar directorios de dependencias
+node_modules/
+
+# Ignorar archivos de compilación o binarios
+*.class
+*.exe
+*.dll
+
+# Ignorar archivos de configuración de IDEs
+.vscode/
+.idea/
+
+# Ignorar archivos de Docker adicionales
+docker-compose.override.yml
