@@ -18,7 +18,10 @@ COPY  . /var/www/html/
 WORKDIR /var/www/html/
 
 # Add Jenkins user to Docker group
-RUN usermod -aG docker jenkins
+RUN groupadd -f docker && usermod -aG docker jenkins
+
+# Change permissions of Docker socket
+RUN chmod 666 /var/run/docker.sock
 
 # Switch back to Jenkins user
 USER jenkins
