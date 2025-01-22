@@ -3,13 +3,11 @@ LABEL maintainer="Jaivic"
 
 RUN a2enmod rewrite
 
-RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list && \
-    sed -i '/security.debian.org/d' /etc/apt/sources.list && \
-    apt-get update && apt-get install -y \
-        zlib1g-dev \
-        libicu-dev \
-        libxml2-dev \
-        libpq-dev && \
+RUN apt-get update && apt-get install -y \
+    zlib1g-dev \
+    libicu-dev \
+    libxml2-dev \
+    libpq-dev && \
     docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql && \
     docker-php-ext-install pdo pdo_mysql pdo_pgsql zip intl xmlrpc soap opcache && \
     docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd && \
