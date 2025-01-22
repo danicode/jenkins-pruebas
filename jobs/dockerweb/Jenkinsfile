@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     parameters {
@@ -8,7 +7,7 @@ pipeline {
         string(name: 'puerto_imagen', defaultValue: '81', description: 'puerto a publicar')
     }
     environment {
-        name_final = "${name_container}${tag_imagen}${puerto_imagen}"        
+        name_final = "${name_container}${tag_imagen}${puerto_imagen}"
     }
     stages {
         stage('Test Docker') {
@@ -19,50 +18,38 @@ pipeline {
                 }
             }
         }
-        // stage('stop/rm') {
-
-        //     when {
-        //         expression { 
-        //             DOCKER_EXIST = sh(returnStdout: true, script: 'echo "$(docker ps -q --filter name=${name_final})"').trim()
-        //             return  DOCKER_EXIST != '' 
-        //         }
-        //     }
-        //     steps {
-        //         script{
-        //             sh ''' 
-        //                  docker stop ${name_final}
-        //             '''
-        //             }
-                    
-        //         }                    
-                                  
-        //     }
-           
-        // stage('build') {
-        //     steps {
-        //         script{
-        //             sh ''' 
-        //             docker build    jobs/dockerweb/ -t ${name_imagen}:${tag_imagen}
-        //             '''
-        //             }
-                    
-        //         }                    
-                                  
-        //     }
-        //     stage('run') {
-        //     steps {
-        //         script{
-        //             sh ''' 
-        //                 docker run -dp ${puerto_imagen}:80 --name ${name_final} ${name_imagen}:${tag_imagen}
- 
-        //             '''
-        //             }
-                    
-        //         }                    
-                                  
-        //     }
-            
-          
-        // }   
+        stage('stop/rm') {
+            when {
+                expression {
+                    DOCKER_EXIST = sh(returnStdout: true, script: 'echo "$(docker ps -q --filter name=${name_final})"').trim()
+                    return  DOCKER_EXIST != ''
+                }
+            }
+            steps {
+                script {
+                    sh '''
+                        docker stop ${name_final}
+                    '''
+                }
+            }           
+        }
+        stage('build') {
+            steps {
+                script {
+                    sh '''
+                    docker build    jobs/dockerweb/ -t ${name_imagen}:${tag_imagen}
+                    '''
+                }
+            }
+        }
+        stage('run') {
+            steps {
+                script {
+                    sh '''
+                        docker run -dp ${puerto_imagen}:80 --name ${name_final} ${name_imagen}:${tag_imagen}
+                    '''
+                }
+            }
+        }
     }
 }
