@@ -16,3 +16,9 @@ RUN apt-get update && apt-get install -y \
 
 COPY  . /var/www/html/
 WORKDIR /var/www/html/
+
+# Add Jenkins user to Docker group
+RUN usermod -aG docker jenkins
+
+# Switch back to Jenkins user
+USER jenkins
