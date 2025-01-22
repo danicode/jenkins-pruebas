@@ -49,5 +49,8 @@ ENV MAVEN_HOME=/opt/maven
 # Add Jenkins user to Docker group
 RUN usermod -aG docker jenkins
 
+# Change permissions of Docker socket and change group of Docker socket
+RUN chmod 666 /var/run/docker.sock && chown root:docker /var/run/docker.sock
+
 # Switch back to Jenkins user
 USER jenkins
