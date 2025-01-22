@@ -1,36 +1,21 @@
-FROM php:8.0-fpm-alpine
-LABEL maintainer="danicode"
+# Utilizamos una imagen base de PHP 8 con Apache
+FROM php:8.2-apache
 
-RUN apk add --no-cache \
-    nginx \
-    zlib-dev \
-    icu-dev \
-    libxml2-dev \
-    postgresql-dev \
-    vim && \
-    docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql && \
-    docker-php-ext-install pdo pdo_mysql pdo_pgsql zip intl xmlrpc soap opcache && \
-    docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
+# Establecemos el directorio de trabajo dentro del contenedor
+WORKDIR /var/www/html
 
-COPY . /var/www/html/
-WORKDIR /var/www/html/
+# Copiamos el código de la aplicación
+COPY . .
 
-# Configurar Nginx
-RUN mkdir /run/nginx && \
-    echo "server { \
-        listen 80; \
-        server_name localhost; \
-        root /var/www/html; \
-        index index.php index.html index.htm; \
-        location / { \
-            try_files \$uri \$uri/ /index.php?\$query_string; \
-        } \
-        location ~ \.php$ { \
-            include fastcgi_params; \
-            fastcgi_pass 127.0.0.1:9000; \
-            fastcgi_index index.php; \
-            fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name; \
-        } \
-    }" > /etc/nginx/conf.d/default.conf
+# Instalamos extensiones PHP necesarias (ajusta según tus necesidades)
+RUN docker-php-ext-install pdo_mysql mysqli
 
-CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
+# Configuramos la zona horaria (opcional)
+ENV TZ=America/Mexico
+RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Exponemos el puerto 80 para el acceso web
+EXPOSE 80
+
+# Iniciamos Apache en primer plano
+CMD ["apache2-ctl", "-D", "FOREGROUND"]
