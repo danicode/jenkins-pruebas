@@ -23,12 +23,14 @@ pipeline {
         always {
             deleteDir()
             sh "echo 'fase always'"
-            def message = "Build ${currentBuild.fullDisplayName} finished with status: ${currentBuild.currentResult}"
-            sh """
-                curl -X POST -H 'Content-Type: application/json' \
-                -d '{"text": "${message}"}' \
-                ${googleChatWebhook}
-            """
+            script {
+                def message = "Build ${currentBuild.fullDisplayName} finished with status: ${currentBuild.currentResult}"
+                sh """
+                    curl -X POST -H 'Content-Type: application/json' \
+                    -d '{"text": "${message}"}' \
+                    ${googleChatWebhook}
+                """
+            }
         }
         success {
             sh "echo 'fase success'"
