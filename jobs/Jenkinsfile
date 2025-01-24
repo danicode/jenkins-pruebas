@@ -8,7 +8,6 @@ pipeline {
     agent any
     environment {
         appName = "variable"
-        googleChatWebhook = credentials('google-chat-webhook')
     }
     stages {
         stage("paso 1") {
@@ -23,14 +22,6 @@ pipeline {
         always {
             deleteDir()
             sh "echo 'fase always'"
-            script {
-                def message = "Build ${currentBuild.fullDisplayName} finished with status: ${currentBuild.currentResult}"
-                sh """
-                    curl -X POST -H 'Content-Type: application/json' \
-                    -d '{"text": "${message}"}' \
-                    ${googleChatWebhook}
-                """
-            }
         }
         success {
             sh "echo 'fase success'"
